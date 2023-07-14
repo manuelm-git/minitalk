@@ -6,7 +6,7 @@
 /*   By: manumart <manumart@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/13 16:37:10 by manumart          #+#    #+#             */
-/*   Updated: 2023/07/13 18:54:55 by manumart         ###   ########.fr       */
+/*   Updated: 2023/07/14 18:36:49 by manumart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,25 +14,25 @@
 
 static void	sig_handler(int signum, siginfo_t *info, void *s)
 {
-	static char	c = 0xFF;
-	static int	bit = 0;
+	static unsigned char	c = 0xFF;
+	static int				bit = 0;
+	static char				*str = 0;
 
 	(void)s;
 	if (signum == SIGUSR1)
-	{
 		c |= 0x80 >> bit;
-	}
 	else if (signum == SIGUSR2)
-	{
 		c ^= 0x80 >> bit;
-	}
 	if (++bit == 8)
 	{
-		ft_putchar_fd (c, 1);
-		if (!c)
+		if (c)
+			str = ft_addchar(str, c);
+		else
 		{
+			ft_putstr_fd(str, 1);
 			if (kill(info->si_pid, SIGUSR2) == -1)
 				exit(EXIT_FAILURE);
+			str = 0;
 		}
 		bit = 0;
 		c = 0xFF;

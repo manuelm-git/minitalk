@@ -6,7 +6,7 @@
 /*   By: manumart <manumart@student.42lisboa.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2023/07/12 21:34:15 by manumart          #+#    #+#             */
-/*   Updated: 2023/07/13 19:54:14 by manumart         ###   ########.fr       */
+/*   Updated: 2023/07/14 18:06:51 by manumart         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,13 +31,13 @@ static void	send_msg(char *msg, int pid)
 			else
 				if (kill(pid, SIGUSR2) == -1)
 					exit(EXIT_FAILURE);
-			usleep(200);
+			usleep(50);
 		}
 	}
 	while (bit--)
 	{
 		kill(pid, SIGUSR2);
-		usleep(50);
+		usleep(25);
 	}
 }
 
@@ -52,15 +52,15 @@ int	main(int ac, char **av)
 {
 	pid_t	pid;
 
-	if (ac != 3 || !(str_is_numeric (av[1])))
+	if (ac != 3 || !(is_it_pidable(av[1])))
 	{
 		ft_putstr_fd("Erro!\n", 2);
 		ft_putstr_fd("Try ./client [PID] [Text]\n", 2);
 		exit(EXIT_FAILURE);
 	}
-	(void)ac;
 	signal(SIGUSR1, sig_handler);
 	signal(SIGUSR2, sig_handler);
 	pid = ft_atoi(av[1]);
 	send_msg(av[2], pid);
+	return (0);
 }
